@@ -24,3 +24,6 @@ when we use ee.Reducer.tolist() we get 37907 rows, but it also seems weird
     //scale: 10
     //});
 Final dimensions of the GeoDataFrame: (37907, 26)
+
+one more problem is also that ee.Reducer.tolist() gives us empty lists [] for patches which did not pass the cloud filter. When trying to do the 4D numpy array it says ValueError: all input arrays must have the same shape
+
