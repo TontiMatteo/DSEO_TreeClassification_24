@@ -2,7 +2,7 @@ import numpy as np
 from scipy.ndimage import rotate
 import random
 
-def augment_image(image, crop=False):
+def random_augment_image(image, crop=False):
     """Apply a series of augmentations to the image."""
     # Example augmentations
     def random_flip(img):
@@ -35,3 +35,25 @@ def augment_image(image, crop=False):
     if crop:
         image = random_crop_and_resize(image)
     return image
+
+def augment_image(image):
+    image_1 = np.flip(image, axis=0)
+    image_2 = np.flip(image, axis=1)
+
+    image_3 = np.rot90(image, k=1, axes=(0, 1))
+    #image_4 = np.rot90(image, k=2, axes=(0, 1))
+    #image_5 = np.rot90(image, k=3, axes=(0, 1))
+
+    # Add small Gaussian noise (helps generalization)
+    noise = np.random.normal(0, 0.02, image.shape)
+    image_6 = np.clip(image + noise, 0, 1)
+
+    # Random brightness/contrast adjustment
+    bright_factor = np.random.uniform(0.8, 1.2)  
+    image_bands = image[..., :-3] * bright_factor  # Modify only B bands
+    image_bands = np.clip(image_bands, 0, 1)  # Keep in [0,1] range
+    image_aug = np.concatenate([image_bands, image[..., -3:]], axis=-1)
+
+    return image_1, image_2, image_3, image_6, image_aug
+
+    
